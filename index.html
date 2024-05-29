@@ -15,7 +15,7 @@
             padding: 0;
             display: flex;
             flex-direction: column;
-            height: 100vh;
+            height: 90vh;
         }
         
         h1 {
@@ -41,9 +41,9 @@
         }
 
         li img {
-                max-width: 100%;
-                border-radius: 5px;
-                margin-top: 10px;
+            max-width: 100%;
+            border-radius: 5px;
+            margin-top: 10px;
         } 
         
         #inputContainer {
@@ -55,7 +55,7 @@
         
         textarea {
             width: 100%;
-            height: 100px;
+            height: 70px;
             margin-bottom: 10px;
             padding: 10px;
             font-size: 16px;
@@ -79,8 +79,8 @@
 
         #themeToggle {
                 position: absolute;
-                top: 10px;
-                right: 10px;
+                top: 515px;
+                right: 0px;
                 padding: 10px;
                 background-color: #007bff;
                 color: white;
@@ -125,7 +125,7 @@
     const themeToggle = document.createElement('button');
     themeToggle.id = 'themeToggle';
     themeToggle.innerText = 'Cambiar tema';
-    body.append(themeToggle);
+    inputContainer.append(themeToggle);
 
     const createMessageElement = (message) => {
         const li = document.createElement('li');
@@ -141,19 +141,16 @@
     };
 
     const getMessages = async () => {
-        
+        ul.innerHTML = '<li>Cargando mensajes...</li>';
         const previousScrollTop = messageContainer.scrollTop;
         const isScrolledToBottom = messageContainer.scrollHeight - messageContainer.clientHeight <= messageContainer.scrollTop + 1;
-
+        
         try{
             const response = await fetch('https://chat.tiburoncin.lat/messages')
             const messages = await response.json()
-            ul.innerHTML = '';
+            
 
             messages.forEach((message) => {
-                //const li = document.createElement('li')
-                //li.append(`${message.username}: ${message.message}`)
-                //ul.append(li)
                 ul.append(createMessageElement(message));
             })
 
@@ -198,10 +195,10 @@
 
     b.addEventListener('click', postMessage)
     t.addEventListener('keypress', (event) => {
-            if (event.key === 'Enter') {
-                event.preventDefault()
-                postMessage()
-            }
+        if (event.key === 'Enter') {
+            event.preventDefault()
+            postMessage()
+        }
     })
 
     const toggleTheme = () => {
@@ -242,6 +239,10 @@
 
         .dark-theme button:hover {
             background-color: #666;
+        }
+
+        .dark-theme #themeToggle{
+            background-color: #444;
         }
     `;
     document.head.appendChild(darkThemeStyle);
