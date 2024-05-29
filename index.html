@@ -4,39 +4,143 @@
   <body>
     <script type="application/javascript">
 
-    const ul = document.createElement('ul')
-    document.body.append(ul)
+    const body = document.body
 
-    const t = document.createElement('textarea')
-    document.body.append(t)
-    const b = document.createElement('button')
-    b.append('SEND')
-    document.body.append(b)
+    const style = document.createElement('style');
+    style.innerHTML = `
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        
+        h1 {
+            text-align: center;
+        }
+        
+        #messageContainer {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        li {
+            background-color: #e2e2e2;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        #inputContainer {
+            padding: 10px;
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #0056b3;
+        }
+    `;
+    document.head.appendChild(style);
+
+    const header = document.createElement('h1')
+    header.innerText = 'Chat en Vivo'
+    body.append(header)
+
+    const messageContainer = document.createElement('div')
+    messageContainer.id = 'messageContainer'
+    body.append(messageContainer)
+
+    const ul = document.createElement('ul')
+    messageContainer.append(ul)
+
+    const inputContainer = document.createElement('div')
+    inputContainer.id = 'inputContainer'
+    body.append(inputContainer)
+
+    const t = document.createElement('textarea');
+    t.id = 'messageInput'
+    t.placeholder = 'Escribe tu mensaje aquí...'
+    inputContainer.append(t)
+
+    const b = document.createElement('button');
+    b.id = 'sendButton'
+    b.innerText = 'ENVIAR'
+    inputContainer.append(b)
 
     const getMessages = async () => {
-      const response = await fetch('https://chat.tiburoncin.lat/messages')
-      const messages = await response.json()
+        ul.innerHTML = '<li>Cargando mensajes...</li>'
+        try{
+            const response = await fetch('https://chat.tiburoncin.lat/messages')
+            const messages = await response.json()
 
-      messages.forEach((message) => {
-        const li = document.createElement('li')
-        li.append(`${message.username}: ${message.message}`)
-        ul.append(li)
-      })
+            messages.forEach((message) => {
+                const li = document.createElement('li')
+                li.append(`${message.username}: ${message.message}`)
+                ul.append(li)
+            })
+        }catch (error) {
+                ul.innerHTML = '<li>Error al cargar mensajes.</li>'
+                console.error('Error fetching messages:', error)
+        }
     }
 
     const postMessage = async () => {
-      console.log(t.value)
-      const body = {
-        username: 'Nelson',
-        message: t.value,
-      }
-      const response = await fetch('https://chat.tiburoncin.lat/messages',
-      {
-        method: 'POST',
-        body: JSON.stringify(body)
-      })
-      ul.innerHTML = ""
-      getMessages()
+            if (t.value.trim() === '') {
+                alert('El mensaje no puede estar vacío.')
+                return
+            }
+            const body = {
+                username: 'Nelson',
+                message: t.value.trim(),
+            }
+            try {
+                const response = await fetch('https://chat.tiburoncin.lat/messages', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(body),
+                })
+
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta del servidor')
+                }
+                t.value = ''
+                getMessages()
+            } catch (error) {
+                console.error('Error posting message:', error)
+            }
     }
 
     b.addEventListener('click', postMessage)
