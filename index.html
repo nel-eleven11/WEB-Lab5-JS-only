@@ -107,9 +107,8 @@
 
         const getMessages = async () => {
             ul.innerHTML = '<li>Cargando mensajes...</li>';
-            //const previousScrollTop = messageContainer.scrollTop;
-            //const isScrolledToBottom = messageContainer.scrollHeight - messageContainer.clientHeight <= messageContainer.scrollTop + 1;
-            const previousScrollHeightMinusScrollTop = messageContainer.scrollHeight - messageContainer.scrollTop;
+            const previousScrollTop = messageContainer.scrollTop;
+            const isScrolledToBottom = messageContainer.scrollHeight - messageContainer.clientHeight <= messageContainer.scrollTop + 1;
 
             try{
                 const response = await fetch('https://chat.tiburoncin.lat/messages');
