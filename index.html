@@ -15,7 +15,7 @@
         document.body.style.display = "flex";
         document.body.style.flexDirection = "column";
         document.body.style.height = "90vh";
-
+        
         const header = document.createElement('h1');
         header.innerText = 'Chat en Vivo';
         header.style.textAlign = "center";
@@ -107,9 +107,10 @@
 
         const getMessages = async () => {
             ul.innerHTML = '<li>Cargando mensajes...</li>';
-            const previousScrollTop = messageContainer.scrollTop;
-            const isScrolledToBottom = messageContainer.scrollHeight - messageContainer.clientHeight <= messageContainer.scrollTop + 1;
-            
+            //const previousScrollTop = messageContainer.scrollTop;
+            //const isScrolledToBottom = messageContainer.scrollHeight - messageContainer.clientHeight <= messageContainer.scrollTop + 1;
+            const previousScrollHeightMinusScrollTop = messageContainer.scrollHeight - messageContainer.scrollTop;
+
             try{
                 const response = await fetch('https://chat.tiburoncin.lat/messages');
                 const messages = await response.json();
@@ -191,7 +192,7 @@
         const applyDarkThemeStyles = () => {
             if (document.body.classList.contains('dark-theme')) {
                 document.body.style.backgroundColor = "#333";
-                document.body.style.color = "white";
+                document.body.style.color = "black";
                 const darkElements = document.querySelectorAll('li, #inputContainer, button, #themeToggle');
                 darkElements.forEach(el => {
                     if (el.tagName === 'LI') {
